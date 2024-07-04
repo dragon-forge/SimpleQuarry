@@ -12,6 +12,7 @@ buildscript {
     dependencies {
         classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.+"
         classpath 'org.spongepowered:mixingradle:0.7.+'
+        classpath "se.bjurr.gitchangelog:git-changelog-gradle-plugin:+"
     }
 }
 
@@ -25,6 +26,7 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: "com.matthewprenger.cursegradle"
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'se.bjurr.gitchangelog.git-changelog-gradle-plugin'
 
 ext.configFile = file("build.txt")
 configFile.withReader {
@@ -257,6 +259,7 @@ modrinth {
     versionType = config.release_type
     uploadFile = jar
     gameVersions = [config.mc_version]
+    setChangelog(providers.fileContents(layout.projectDirectory.file("CHANGELOG.md")).asText)
     dependencies {
         def mods = config.required_mods.split(";")
         if (mods.length > 0 && (mods.length > 1 || !mods[0].isEmpty()))
@@ -316,8 +319,8 @@ curseforge {
     apiKey = System.env.CURSEFORGE_API_KEY != null ? System.env.CURSEFORGE_API_KEY : "NONE"
     project {
         id = config.cf_project
-        changelogType = 'html'
-        changelog = ""
+        changelogType = 'markdown'
+        changelog = file("CHANGELOG.md")
         releaseType = config.release_type
         addGameVersion config.mc_version
         addGameVersion "Forge"
@@ -405,6 +408,20 @@ publish.dependsOn('reobfJar')
 
 build.dependsOn signJar
 
+task generateChangelog(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
+    group = "git changelog"
+    if (config.last_git_commit != null && !config.last_git_commit.isEmpty()) fromRevision = config.last_git_commit
+    templateContent = """
+Changelog:
+
+{{#tags}}
+  {{#commits}}
+- {{messageTitle}} ([{{hash}}](https://github.com/{{ownerName}}/{{repoName}}/commit/{{hash}})) by {{authorName}}
+  {{/commits}}
+{{/tags}}
+"""
+}
+
 tasks.register('buildAndUploadMod') {
     group = "upload"
     dependsOn "curseforge${config.cf_project}", 'modrinth'
@@ -454,23 +471,56 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
-// This piece of garbage will ensure that the build number is updated after build is executed.
-tasks.build.doLast {
-    if(!hasConfig("build_candidate") || !Boolean.parseBoolean(config.build_candidate))
-    {
-        def buildTxt = configFile.toPath();
-        List<String> lines = Files.readAllLines buildTxt;
+import java.nio.file.Files
+
+def incrementBuild = {
+    if (!hasConfig("build_candidate") || !Boolean.parseBoolean(config.build_candidate)) {
+        def buildTxt = configFile.toPath()
+        List<String> lines = Files.readAllLines buildTxt
         lines.replaceAll { String ln ->
-            if(ln.startsWith("mod_version"))
-            {
-                def version = ln.split("=")[1];
-                def dot = version.lastIndexOf('.') + 1;
-                def newVersion = version.substring(0, dot);
-                def lastOne = Integer.parseInt(version.substring(dot)) + 1;
-                return "mod_version=" + newVersion + lastOne;
+            if (ln.startsWith("mod_version")) {
+                def version = ln.split("=")[1]
+                def dot = version.lastIndexOf('.') + 1
+                def newVersion = version.substring(0, dot)
+                def lastOne = Integer.parseInt(version.substring(dot)) + 1
+                return "mod_version=" + newVersion + lastOne
             }
-            return ln;
+            if (ln.startsWith("last_git_commit")) {
+                def lastCommit = ln.split("=", 2)[1]
+                def truncated = se.bjurr.gitchangelog.api.GitChangelogApi.gitChangelogApiBuilder()
+                        .withFromRevision(lastCommit)
+                        .withFromRepo(projectDir)
+                        .withTemplateContent("""
+{{#tags}}
+{{#commits}}
+[START]{{hash}}[END]
+{{/commits}}
+{{/tags}}
+""").render()
+
+                def found = truncated.indexOf("[START]")
+                def endIdx = truncated.indexOf("[END]", found)
+                if (found == -1 || endIdx == -1) return ln
+                return "last_git_commit=" + truncated.substring(found + 7, endIdx)
+            }
+            return ln
         }
-        Files.write buildTxt, lines, StandardOpenOption.CREATE;
+        Files.write buildTxt, lines, java.nio.file.StandardOpenOption.CREATE
     } else println "Build candidate enabled, we are not increasing build number after this."
+}
+
+tasks.register("incrementBuildVersionProperty") {
+    group "upload"
+    doLast incrementBuild
+}
+
+// This piece of garbage will ensure that the build number is updated after build is executed.
+tasks.build.doLast incrementBuild
+tasks.buildAndUploadMod.doLast incrementBuild
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
 }

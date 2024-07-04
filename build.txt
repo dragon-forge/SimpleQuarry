@@ -7,12 +7,12 @@ mod_authors=Zeitheron
 mod_description=Simple mod that adds a simple quarry. Or two.
 issue_tracker_url=https://github.com/dragon-forge/SimpleQuarry/issues
 
-mod_version=20.1.5
+mod_version=20.1.6
 build_candidate=false
 
 # Maven Info
 maven_group=org.zeith.simplequarry
-hl_version=20.1.29
+hl_version=20.1.30
 maven_url=file:///SERVER//Maven
 
 # MC Info
@@ -31,6 +31,9 @@ modrinth_project=s3lgCbLg
 
 # alpha, beta, release
 release_type=release
+
+# Keeping track of latest git commit for changelog generation!
+last_git_commit=e356671aaa5d34c8f58a30e64709487b7f426e12
 
 # List of mods separated by ;
 # If a specific mod for one platform is needed, @m: or @c: prefixes are used.
