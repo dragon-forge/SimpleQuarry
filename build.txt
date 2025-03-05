@@ -1,5 +1,5 @@
 # Mod Info
-mod_version=21.0.4
+mod_version=21.4.2
 build_candidate=false
 
 # Persistent mod info
@@ -27,7 +27,7 @@ modrinth_project=s3lgCbLg
 release_type=release
 
 # Keeping track of latest git commit for changelog generation!
-last_git_commit=0f40c8c25a98f27
+last_git_commit=103364977d81265
 
 # List of mods separated by ;
 # If a specific mod for one platform is needed, @m: or @c: prefixes are used.
