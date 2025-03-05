@@ -13,30 +13,23 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
-import org.zeith.hammerlib.annotations.RegistryName;
-import org.zeith.hammerlib.annotations.SimplyRegister;
-import org.zeith.hammerlib.api.forge.BlockAPI;
 import org.zeith.hammerlib.api.inv.SimpleInventory;
 import org.zeith.hammerlib.api.io.NBTSerializable;
 import org.zeith.squarry.SQConfig;
-import org.zeith.squarry.blocks.BlockPoweredQuarry;
+import org.zeith.squarry.init.BlocksSQ;
 import org.zeith.squarry.inventory.ContainerPoweredQuarry;
 import org.zeith.squarry.items.ItemUpgrade;
 
-@SimplyRegister
 public class TilePoweredQuarry
 		extends TileFuelQuarry
 		implements IEnergyStorage
 {
-	@RegistryName("powered_quarry")
-	public static final BlockEntityType<TilePoweredQuarry> POWERED_QUARRY = BlockAPI.createBlockEntityType(TilePoweredQuarry::new, BlockPoweredQuarry.POWERED_QUARRY);
-	
 	@NBTSerializable
 	public final SimpleInventory invUpgrades = new SimpleInventory(5);
 	
 	public CompoundTag additionalTags = new CompoundTag();
 	
-	protected TilePoweredQuarry(BlockEntityType<?> type, BlockPos pos, BlockState state)
+	public TilePoweredQuarry(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
 		super(type, pos, state);
 		tickRate = SQConfig.getPoweredQuarryTickRate();
@@ -96,6 +89,7 @@ public class TilePoweredQuarry
 			canExtract = Math.min(receiveEnergy(canExtract, true), canExtract);
 			pc.extractEnergy(canExtract, false);
 			receiveEnergy(canExtract, false);
+			setChanged();
 		}
 		
 		for(int i = 0; i < invUpgrades.getContainerSize(); ++i)
@@ -106,6 +100,7 @@ public class TilePoweredQuarry
 				ItemStack s = invUpgrades.getStackInSlot(i).copy();
 				invUpgrades.setItem(i, ItemStack.EMPTY);
 				queueItems.add(s);
+				setChanged();
 			} else if(up != null)
 				up.tick(this, i);
 		}
@@ -157,7 +152,7 @@ public class TilePoweredQuarry
 	@Override
 	protected Block getQuarryBlock()
 	{
-		return BlockPoweredQuarry.POWERED_QUARRY;
+		return BlocksSQ.POWERED_QUARRY;
 	}
 	
 	@Override
@@ -192,10 +187,13 @@ public class TilePoweredQuarry
 		if(!SQConfig.isPoweredQuarry())
 			return 0;
 		float fec = SQConfig.getFeConversion(), hec = SQConfig.getHeConversion();
+		int rec = 0;
 		if(maxReceive >= fec)
-			return (int) (storage.consumeQF(null, maxReceive / fec, simulate) * fec);
+			rec = (int) (storage.consumeQF(null, maxReceive / fec, simulate) * fec);
 		else // Otherwise, convert at half efficiency.
-			return (int) (storage.consumeQF(null, maxReceive / hec, simulate) * hec);
+			rec = (int) (storage.consumeQF(null, maxReceive / hec, simulate) * hec);
+		if(rec > 0) setChanged();
+		return rec;
 	}
 	
 	@Override

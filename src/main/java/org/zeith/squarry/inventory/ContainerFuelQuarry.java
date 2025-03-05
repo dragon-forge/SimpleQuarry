@@ -34,7 +34,7 @@ public class ContainerFuelQuarry
 		for(x = 0; x < 9; ++x)
 			addSlot(new Slot(player.getInventory(), x, 8 + x * 18, 142));
 		
-		addSlot(new SlotFurnaceFuel(tile.inventory, 0, 80, 49));
+		addSlot(new SlotFurnaceFuel(tile.getLevel().fuelValues(), tile.inventory, 0, 80, 49));
 	}
 	
 	@Override

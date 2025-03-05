@@ -2,11 +2,6 @@
 mod_version=21.0.4
 build_candidate=false
 
-# Mod dependencies (jei is not a requirement, but HammerLib is)
-hl_version=21.0.13
-jei_version=19.0.0.9
-# hammeranims_version=21.0.33
-
 # Persistent mod info
 mod_id=squarry
 archive_name=SimpleQuarry

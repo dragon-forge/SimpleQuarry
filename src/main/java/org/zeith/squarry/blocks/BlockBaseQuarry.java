@@ -4,8 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -34,7 +33,7 @@ public abstract class BlockBaseQuarry
 	protected BlockBaseQuarry(Properties props)
 	{
 		super(props);
-		BlockHarvestAdapter.bindTool(BlockHarvestAdapter.MineableType.PICKAXE, Tiers.IRON, this);
+		BlockHarvestAdapter.bindTool(BlockHarvestAdapter.MineableType.PICKAXE, ToolMaterial.IRON, this);
 	}
 	
 	@Override
@@ -50,7 +49,7 @@ public abstract class BlockBaseQuarry
 		{
 			int y = pos.getY();
 			int minedLevels = y - tfq._y;
-			int maxMineLevels = y - level.getMinBuildHeight();
+			int maxMineLevels = y - level.getMinY();
 			int v = Math.round(minedLevels * 15F / maxMineLevels);
 			return 15 - Mth.clamp(v, 0, 15);
 		}

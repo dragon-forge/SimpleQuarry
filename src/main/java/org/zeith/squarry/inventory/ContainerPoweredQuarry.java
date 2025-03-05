@@ -35,7 +35,7 @@ public class ContainerPoweredQuarry
 		for(x = 0; x < 9; ++x)
 			addSlot(new Slot(player.getInventory(), x, 8 + x * 18, 142));
 
-		addSlot(new SlotFuelAndBattery(tile.inventory, 0, 25, 49));
+		addSlot(new SlotFuelAndBattery(tile.getLevel().fuelValues(), tile.inventory, 0, 25, 49));
 		for(int i = 4; i >= 0; --i)
 			addSlot(new SlotUpgrade(tile.invUpgrades, i, 62 + i * 18, 59, tile));
 	}

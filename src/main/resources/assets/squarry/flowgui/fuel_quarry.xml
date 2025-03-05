@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root width="176" height="166" centered="int">
+    <img src="squarry:textures/gui/fuel_quarry.png"
+         u-coord="0" v-coord="0"
+         image-width="176" image-height="166"
+    >
+        <label value='(q) => q.gui.getTitle()' color="#3f3f3f" shadow="false" x="8" y="6"/>
+        <label value='{"translate":"container.inventory"}' color="#3f3f3f" shadow="false" x="8" y="85"
+               align-y="bottom"/>
+
+        <img id="fire_background" src="squarry:textures/gui/fuel_quarry.png"
+             x="81.5" y="28"
+             u-coord="176" v-coord="14"
+             image-width="13" image-height="13"
+        >
+            <img id="fire_active" src="squarry:textures/gui/fuel_quarry.png"
+                 x="-0.5" y="(q) => 14 - q.gui.fire"
+                 u-coord="176" v-coord="(q) => 14 - q.gui.fire"
+                 image-width="13" image-height="(q) => q.gui.fire"
+            />
+        </img>
+
+        <import from="c:player_hotbar" x="7" y="25" align-y="bottom"/>
+        <import from="c:player_inventory" x="7" y="83" align-y="bottom"/>
+
+        <slot index="(q) => q.slots.guiSlots[0]" x="76" y="45" scale-z="0.99" width="24" height="24"/>
+    </img>
+</root>

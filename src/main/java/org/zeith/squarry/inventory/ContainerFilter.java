@@ -120,7 +120,7 @@ public class ContainerFilter
 			@Override
 			public Component getDisplayName()
 			{
-				return filter.getDisplayName();
+				return filter.getHoverName();
 			}
 			
 			@Nullable

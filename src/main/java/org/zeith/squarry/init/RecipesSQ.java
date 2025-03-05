@@ -12,7 +12,6 @@ import org.zeith.hammerlib.annotations.ProvideRecipes;
 import org.zeith.hammerlib.api.IRecipeProvider;
 import org.zeith.hammerlib.event.recipe.RegisterRecipesEvent;
 import org.zeith.squarry.SQConfig;
-import org.zeith.squarry.blocks.*;
 import org.zeith.squarry.util.PreciseIngredient;
 
 @ProvideRecipes
@@ -21,7 +20,7 @@ public class RecipesSQ
 {
 	public static Holder<Enchantment> enchantment(RegisterRecipesEvent e, ResourceKey<Enchantment> ench)
 	{
-		return e.getRegistries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(ench);
+		return e.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(ench);
 	}
 	
 	@Override
@@ -29,13 +28,13 @@ public class RecipesSQ
 	{
 		SQConfig.reload();
 		
-		ItemStack topQuarry = new ItemStack(BlockFuelQuarry.FUEL_QUARRY);
+		ItemStack topQuarry = new ItemStack(BlocksSQ.FUEL_QUARRY);
 		
 		var silkTouch = enchantment(event, Enchantments.SILK_TOUCH);
 		var fortune = enchantment(event, Enchantments.FORTUNE);
 		
 		event.shaped()
-				.result(new ItemStack(BlockFuelQuarry.FUEL_QUARRY))
+				.result(new ItemStack(BlocksSQ.FUEL_QUARRY))
 				.shape("pip", "fgf", "pdp")
 				.map('p', Tags.Items.ENDER_PEARLS)
 				.map('i', Items.IRON_PICKAXE)
@@ -45,7 +44,7 @@ public class RecipesSQ
 				.register();
 		
 		event.shaped()
-				.result(new ItemStack(BlockQuarryPipe.QUARRY_PIPE, 12))
+				.result(new ItemStack(BlocksSQ.QUARRY_PIPE, 12))
 				.shape("ibi", "iui", "ibi")
 				.map('i', Tags.Items.INGOTS_IRON)
 				.map('b', Items.IRON_BARS)
@@ -162,23 +161,23 @@ public class RecipesSQ
 		
 		if(SQConfig.isPoweredQuarry())
 		{
-			topQuarry = new ItemStack(BlockPoweredQuarry.POWERED_QUARRY);
+			topQuarry = new ItemStack(BlocksSQ.POWERED_QUARRY);
 			
 			if(SQConfig.isEasyPowerQuarryRecipe())
 				event.shaped()
-						.result(new ItemStack(BlockPoweredQuarry.POWERED_QUARRY))
+						.result(new ItemStack(BlocksSQ.POWERED_QUARRY))
 						.shape("ehe", "dqd", "ece")
 						.map('c', Tags.Items.CHESTS_WOODEN)
-						.map('q', BlockFuelQuarry.FUEL_QUARRY)
+						.map('q', BlocksSQ.FUEL_QUARRY)
 						.map('h', Items.HOPPER)
 						.map('e', Items.ENDER_EYE)
 						.map('d', Items.DIAMOND_PICKAXE)
 						.register();
 			else
 				event.shaped()
-						.result(new ItemStack(BlockPoweredQuarry.POWERED_QUARRY))
+						.result(new ItemStack(BlocksSQ.POWERED_QUARRY))
 						.shape("phl", "dqd", "sem")
-						.map('q', BlockFuelQuarry.FUEL_QUARRY)
+						.map('q', BlocksSQ.FUEL_QUARRY)
 						.map('d', Items.DIAMOND_PICKAXE)
 						.map('p', Items.PODZOL)
 						.map('h', Items.HOPPER)

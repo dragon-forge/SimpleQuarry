@@ -2,14 +2,15 @@ package org.zeith.squarry.inventory.slots;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.FuelValues;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
 public class SlotFuelAndBattery
 		extends SlotFurnaceFuel
 {
-	public SlotFuelAndBattery(Container inv, int id, int x, int y)
+	public SlotFuelAndBattery(FuelValues fuelValues, Container inv, int id, int x, int y)
 	{
-		super(inv, id, x, y);
+		super(fuelValues, inv, id, x, y);
 	}
 	
 	@Override

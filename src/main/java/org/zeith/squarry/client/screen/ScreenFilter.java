@@ -1,113 +1,90 @@
 package org.zeith.squarry.client.screen;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
-import org.zeith.hammerlib.client.screen.ScreenWTFMojang;
-import org.zeith.hammerlib.client.utils.FXUtils;
-import org.zeith.hammerlib.client.utils.RenderUtils;
-import org.zeith.squarry.SQConstants;
+import org.zeith.hammerlib.client.flowgui.objects.GuiButtonObject;
+import org.zeith.hammerlib.client.flowgui.reader.XmlFlowgui;
+import org.zeith.hammerlib.client.screen.FlowguiScreen;
+import org.zeith.hammerlib.util.mcf.Resources;
+import org.zeith.squarry.SimpleQuarry;
 import org.zeith.squarry.inventory.ContainerFilter;
 
+@XmlFlowgui("filter")
 public class ScreenFilter
-		extends ScreenWTFMojang<ContainerFilter>
+		extends FlowguiScreen<ContainerFilter>
 {
+	protected static final WidgetSprites[] DATA = {
+			new WidgetSprites(
+					SimpleQuarry.id("filter/data/disabled"),
+					Resources.location("widget/button_disabled"),
+					SimpleQuarry.id("filter/data/disabled_hover")
+			),
+			new WidgetSprites(
+					SimpleQuarry.id("filter/data/enabled"),
+					Resources.location("widget/button_disabled"),
+					SimpleQuarry.id("filter/data/enabled_hover")
+			)
+	};
+	
+	protected static final WidgetSprites[] PREDICATE = {
+			new WidgetSprites(
+					SimpleQuarry.id("filter/predicate/blocklist"),
+					Resources.location("widget/button_disabled"),
+					SimpleQuarry.id("filter/predicate/blocklist_hover")
+			),
+			new WidgetSprites(
+					SimpleQuarry.id("filter/predicate/allowlist"),
+					Resources.location("widget/button_disabled"),
+					SimpleQuarry.id("filter/predicate/allowlist_hover")
+			)
+	};
+	
+	protected static final WidgetSprites[] TAGS = {
+			new WidgetSprites(
+					SimpleQuarry.id("filter/tags/disabled"),
+					Resources.location("widget/button_disabled"),
+					SimpleQuarry.id("filter/tags/disabled_hover")
+			),
+			new WidgetSprites(
+					SimpleQuarry.id("filter/tags/enabled"),
+					Resources.location("widget/button_disabled"),
+					SimpleQuarry.id("filter/tags/enabled_hover")
+			)
+	};
+	
 	public ScreenFilter(ContainerFilter container, Inventory plyerInv, Component name)
 	{
 		super(container, plyerInv, name);
 	}
 	
+	public GuiButtonObject predicate, tags, data;
+	public ContainerFilter.FilterData filter;
+	
 	@Override
-	protected void renderBackground(GuiGraphics gfx, float partialTime, int mouseX, int mouseY)
+	protected void init()
 	{
-		var pose = gfx.pose();
-		
-		FXUtils.bindTexture(SQConstants.MOD_ID, "textures/gui/filter.png");
-		RenderUtils.drawTexturedModalRect(gfx, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-		
-		ContainerFilter.FilterData filter = menu.data;
-		
-		FXUtils.bindTexture(SQConstants.MOD_ID, "textures/gui/widgets.png");
-		
-		{
-			boolean hover = mouseX >= leftPos + 18 && mouseY >= topPos + 17 && mouseX < leftPos + 34 && mouseY < topPos + 33;
-			
-			RenderUtils.drawTexturedModalRect(pose, leftPos + 18, topPos + 17, 13 + (hover ? 16 : 0), 16 + (filter.invert ? 0 : 16), 16, 16);
-		}
-		
-		{
-			boolean hover = mouseX >= leftPos + 18 && mouseY >= topPos + 17 + 18 && mouseX < leftPos + 34 && mouseY < topPos + 33 + 18;
-			
-			RenderUtils.drawTexturedModalRect(pose, leftPos + 18, topPos + 35, 13 + (hover ? 16 : 0), 48 + (filter.useod ? 0 : 16), 16, 16);
-		}
-		
-		{
-			boolean hover = mouseX >= leftPos + 18 && mouseY >= topPos + 17 + 36 && mouseX < leftPos + 34 && mouseY < topPos + 33 + 36;
-			
-			RenderUtils.drawTexturedModalRect(pose, leftPos + 18, topPos + 53, 13 + (hover ? 16 : 0), 80 + (filter.usemeta ? 0 : 16), 16, 16);
-		}
+		super.init();
+		predicate = root.findByName("predicate", GuiButtonObject.class);
+		tags = root.findByName("tags", GuiButtonObject.class);
+		data = root.findByName("data", GuiButtonObject.class);
 	}
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int p_97750_)
+	public void render(GuiGraphics pose, int mouseX, int mouseY, float partialTime)
 	{
-		if(mouseX >= leftPos + 18 && mouseY >= topPos + 17 && mouseX < leftPos + 34 && mouseY < topPos + 33 && handleClick(0))
-		{
-			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1));
-			return true;
-		}
+		filter = menu.data;
 		
-		if(mouseX >= leftPos + 18 && mouseY >= topPos + 17 + 18 && mouseX < leftPos + 34 && mouseY < topPos + 33 + 18 && handleClick(1))
-		{
-			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1));
-			return true;
-		}
+		if(predicate != null) predicate.sprites = PREDICATE[filter.invert ? 0 : 1];
+		if(tags != null) tags.sprites = TAGS[filter.useod ? 1 : 0];
+		if(data != null) data.sprites = DATA[filter.usemeta ? 1 : 0];
 		
-		if(mouseX >= leftPos + 18 && mouseY >= topPos + 17 + 36 && mouseX < leftPos + 34 && mouseY < topPos + 33 + 36 && handleClick(2))
-		{
-			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1));
-			return true;
-		}
-		
-		return super.mouseClicked(mouseX, mouseY, p_97750_);
+		super.render(pose, mouseX, mouseY, partialTime);
 	}
 	
 	public boolean handleClick(int k)
 	{
-		if(this.menu.clickMenuButton(this.minecraft.player, k))
-		{
-			this.minecraft.gameMode.handleInventoryButtonClick((this.menu).containerId, k);
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	protected boolean renderForeground(GuiGraphics gfx, int mouseX, int mouseY)
-	{
-		var pose = gfx.pose();
-		ContainerFilter.FilterData filter = menu.data;
-		
-		{
-			boolean hover = mouseX >= leftPos + 18 && mouseY >= topPos + 17 && mouseX < leftPos + 34 && mouseY < topPos + 33;
-			if(hover)
-				gfx.renderTooltip(font, Component.translatable("info.squarry.filter." + (filter.invert ? "blacklist" : "whitelist")), mouseX - leftPos, mouseY - topPos);
-		}
-		
-		{
-			boolean hover = mouseX >= leftPos + 18 && mouseY >= topPos + 17 + 18 && mouseX < leftPos + 34 && mouseY < topPos + 33 + 18;
-			if(hover)
-				gfx.renderTooltip(font, Component.translatable("info.squarry.filter.oredict." + (filter.useod ? "yes" : "no")), mouseX - leftPos, mouseY - topPos);
-		}
-		
-		{
-			boolean hover = mouseX >= leftPos + 18 && mouseY >= topPos + 17 + 36 && mouseX < leftPos + 34 && mouseY < topPos + 33 + 36;
-			if(hover)
-				gfx.renderTooltip(font, Component.translatable("info.squarry.filter.meta." + (filter.usemeta ? "yes" : "no")), mouseX - leftPos, mouseY - topPos);
-		}
-		
-		return true;
+		return clickMenuButton(k);
 	}
 }

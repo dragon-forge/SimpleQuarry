@@ -2,6 +2,7 @@ package org.zeith.squarry.items;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import org.zeith.squarry.blocks.entity.TilePoweredQuarry;
@@ -21,7 +22,9 @@ public class ItemAutoSmeltUpgrade
 	@Override
 	public void handleDrops(TilePoweredQuarry quarry, BlockPos pos, NonNullList<ItemStack> drops)
 	{
-		var rm = quarry.getLevel().getRecipeManager();
+		if(!(quarry.getLevel() instanceof ServerLevel sl)) return;
+		var rm = sl.recipeAccess();
+		
 		for(int i = 0; i < drops.size(); ++i)
 		{
 			SingleRecipeInput ctr = new SingleRecipeInput(drops.get(i));

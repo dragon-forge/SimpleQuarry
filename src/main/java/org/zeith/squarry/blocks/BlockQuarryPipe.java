@@ -1,51 +1,34 @@
 package org.zeith.squarry.blocks;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.*;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.*;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.*;
 import org.jetbrains.annotations.Nullable;
-import org.zeith.hammerlib.annotations.RegistryName;
-import org.zeith.hammerlib.annotations.SimplyRegister;
-import org.zeith.hammerlib.api.blocks.ICreativeTabBlock;
-import org.zeith.hammerlib.api.items.CreativeTab;
-import org.zeith.hammerlib.core.adapter.BlockHarvestAdapter;
-import org.zeith.hammerlib.core.adapter.TagAdapter;
-import org.zeith.squarry.SimpleQuarry;
+import org.zeith.hammerlib.core.adapter.*;
 import org.zeith.squarry.blocks.entity.TileFuelQuarry;
 import org.zeith.squarry.init.TagsSQ;
 
 import java.util.List;
 
-@SimplyRegister
 public class BlockQuarryPipe
 		extends Block
-		implements ICreativeTabBlock
 {
 	protected static final VoxelShape SHAPE = box(5, 0, 5, 11, 16, 11);
-	
-	@RegistryName("quarry_pipe")
-	public static final BlockQuarryPipe QUARRY_PIPE = new BlockQuarryPipe(Properties.ofFullCopy(Blocks.IRON_BLOCK)
-			.strength(2.0F, 8.0F)
-	);
 	
 	public BlockQuarryPipe(Properties props)
 	{
 		super(props);
 		TagAdapter.bind(TagsSQ.Blocks.QUARRY_PIPE, this);
-		BlockHarvestAdapter.bindTool(BlockHarvestAdapter.MineableType.PICKAXE, Tiers.IRON, this);
+		BlockHarvestAdapter.bindTool(BlockHarvestAdapter.MineableType.PICKAXE, ToolMaterial.IRON, this);
 	}
 	
 	@Override
@@ -79,7 +62,7 @@ public class BlockQuarryPipe
 	}
 	
 	@Override
-	public BlockState updateShape(BlockState state, Direction p_60542_, BlockState p_60543_, LevelAccessor level, BlockPos pos, BlockPos p_60546_)
+	protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random)
 	{
 		return tfState(state, level, pos);
 	}
@@ -94,11 +77,5 @@ public class BlockQuarryPipe
 	public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_)
 	{
 		return SHAPE;
-	}
-	
-	@Override
-	public CreativeTab getCreativeTab()
-	{
-		return SimpleQuarry.ITEM_GROUP;
 	}
 }

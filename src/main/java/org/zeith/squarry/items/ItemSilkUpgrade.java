@@ -22,7 +22,7 @@ public class ItemSilkUpgrade
 	public void addEnchantments(TilePoweredQuarry quarry, ItemEnchantments.Mutable enchantmentMap)
 	{
 		enchantmentMap.set(
-				quarry.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SILK_TOUCH),
+				quarry.registryAccess().holderOrThrow(Enchantments.SILK_TOUCH),
 				1
 		);
 	}

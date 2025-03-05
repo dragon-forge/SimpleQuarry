@@ -27,7 +27,7 @@ public class ItemBaseSQ
 	{
 		for(int i = 0; ; ++i)
 		{
-			var id = getDescriptionId(stack) + ".tooltip" + i;
+			var id = getDescriptionId() + ".tooltip" + i;
 			var t = Component.translatable(id);
 			if(t.getString().equals(id)) break;
 			tooltip.add(t.withStyle(ChatFormatting.GRAY));

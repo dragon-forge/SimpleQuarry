@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root width="176" height="166" centered="int">
+    <img src="squarry:textures/gui/powered_quarry.png"
+         u-coord="0" v-coord="0"
+         image-width="176" image-height="166"
+    >
+        <img id="fire_background" src="squarry:textures/gui/powered_quarry.png"
+             x="26.5" y="34"
+             u-coord="176" v-coord="14"
+             image-width="13" image-height="13"
+        >
+            <img id="fire_active" src="squarry:textures/gui/powered_quarry.png"
+                 x="-0.5" y="(q) => 14 - q.gui.fire"
+                 u-coord="176" v-coord="(q) => 14 - q.gui.fire"
+                 image-width="13" image-height="(q) => q.gui.fire"
+            />
+        </img>
+
+        <empty x="6" y="7">
+            <img x="1" image-width="11" u-coord="0"
+                 y="(q) => 65 - q.gui.power"
+                 image-height="(q) => q.gui.power"
+                 v-coord="(q) => 80 - q.gui.power"
+                 src="squarry:textures/gui/energy_bar.png"
+                 file-width="11" file-height="64"
+            />
+            <hover x="1" y="1" width="11" height="64">
+                <tooltip width="11" height="64"
+                         text='(q) => [{"text": q.gui.blocksToBreak + " ", extra:[{"translate":"info.squarry.blockstobreak"}]}]'/>
+            </hover>
+        </empty>
+
+        <slot x="25" y="49" index="(q) => q.slots.guiSlots[0]"/>
+
+        <empty id="upgrade_slots" x="61" y="58" width="90" height="18">
+            <slot x="1" y="1" index="(q) => q.slots.guiSlots[1]"/>
+            <slot x="19" y="1" index="(q) => q.slots.guiSlots[2]"/>
+            <slot x="37" y="1" index="(q) => q.slots.guiSlots[3]"/>
+            <slot x="55" y="1" index="(q) => q.slots.guiSlots[4]"/>
+            <slot x="73" y="1" index="(q) => q.slots.guiSlots[5]"/>
+        </empty>
+
+        <import from="c:player_hotbar" x="7" y="25" align-y="bottom"/>
+        <import from="c:player_inventory" x="7" y="83" align-y="bottom"/>
+    </img>
+</root>

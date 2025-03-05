@@ -1,20 +1,15 @@
 package org.zeith.squarry.items;
 
 import com.google.common.collect.*;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.*;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.registries.*;
+import net.minecraft.resources.*;
+import net.minecraft.tags.*;
+import net.minecraft.world.item.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
-import org.zeith.squarry.SQConfig;
-import org.zeith.squarry.SimpleQuarry;
+import org.zeith.squarry.*;
 import org.zeith.squarry.blocks.entity.TilePoweredQuarry;
 
 import java.util.*;
@@ -49,7 +44,7 @@ public class ItemUnificationUpgrade
 	public static void tagsRefresh(TagsUpdatedEvent e)
 	{
 		if(!e.shouldUpdateStaticData()) return;
-		Registry<Item> items = e.getRegistryAccess().registryOrThrow(Registries.ITEM);
+		var items = e.getLookupProvider().lookupOrThrow(Registries.ITEM);
 		
 		Set<TagKey<Item>> excludedTags = Arrays.stream(SQConfig.getExcludedUnificationEntries())
 				.filter(s -> s.startsWith("#"))
@@ -63,15 +58,15 @@ public class ItemUnificationUpgrade
 				.filter(s -> !s.startsWith("#"))
 				.map(ResourceLocation::tryParse)
 				.filter(Objects::nonNull)
-				.map(BuiltInRegistries.ITEM::get)
+				.map(rl -> items.get(ResourceKey.create(Registries.ITEM, rl)).map(Holder.Reference::value).orElse(Items.AIR))
+				.filter(it -> it != Items.AIR)
 				.collect(Collectors.toSet());
 		
 		String[] materials = SQConfig.getAllowedUnificationMaterials();
 		ArrayListMultimap<TagKey<Item>, Item> uniObjects = ArrayListMultimap.create();
-		items.getTags()
-				.filter(t -> canBeUnified(materials, t.getFirst()))
-				.filter(t -> !excludedTags.contains(t.getFirst()))
-				.map(Pair::getSecond)
+		items.listTags()
+				.filter(t -> canBeUnified(materials, t.key()))
+				.filter(t -> !excludedTags.contains(t.key()))
 				.forEach(tag -> uniObjects.putAll(tag.key(), tag.stream().map(Holder::value).filter(it -> !excludedItems.contains(it)).toList()));
 		
 		UNIFIED_OBJECTS = uniObjects;

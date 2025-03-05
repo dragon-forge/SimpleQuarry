@@ -7,7 +7,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.zeith.squarry.blocks.entity.TilePoweredQuarry;
 
-import static org.zeith.squarry.blocks.entity.TilePoweredQuarry.POWERED_QUARRY;
+import static org.zeith.squarry.init.TilesSQ.POWERED_QUARRY;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class CapabilitiesSQ

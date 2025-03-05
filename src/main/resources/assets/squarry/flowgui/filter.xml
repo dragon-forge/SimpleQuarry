@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root width="176" height="166" centered="int">
+    <img src="squarry:textures/gui/filter.png"
+         u-coord="0" v-coord="0"
+         image-width="176" image-height="166"
+         file-width="176" file-height="166"
+    >
+        <label value='(q) => q.gui.getTitle()' color="#3f3f3f" shadow="false" x="8" y="6"/>
+        <label value='{"translate":"container.inventory"}' color="#3f3f3f" shadow="false" x="8" y="85"
+               align-y="bottom"/>
+
+        <empty x="53" y="17">
+            <slot index="(q) => q.slots.guiSlots[0]"/>
+            <slot index="(q) => q.slots.guiSlots[1]" x="18"/>
+            <slot index="(q) => q.slots.guiSlots[2]" x="36"/>
+            <slot index="(q) => q.slots.guiSlots[3]" x="54"/>
+            <slot index="(q) => q.slots.guiSlots[4]" y="18"/>
+            <slot index="(q) => q.slots.guiSlots[5]" y="18" x="18"/>
+            <slot index="(q) => q.slots.guiSlots[6]" y="18" x="36"/>
+            <slot index="(q) => q.slots.guiSlots[7]" y="18" x="54"/>
+            <slot index="(q) => q.slots.guiSlots[8]" y="36"/>
+            <slot index="(q) => q.slots.guiSlots[9]" y="36" x="18"/>
+            <slot index="(q) => q.slots.guiSlots[10]" y="36" x="36"/>
+            <slot index="(q) => q.slots.guiSlots[11]" y="36" x="54"/>
+        </empty>
+
+        <empty x="18" y="17">
+            <button id="predicate" width="16" height="16" callback="(q) => q.gui.handleClick(0)">
+                <tooltip
+                        text='(q) => [{"translate":"info.squarry.filter." + (q.gui.filter.invert ? "blacklist" : "whitelist")}]'
+                        width="16" height="16"/>
+            </button>
+
+            <button id="tags" y="18" width="16" height="16" callback="(q) => q.gui.handleClick(1)">
+                <tooltip
+                        text='(q) => [{"translate":"info.squarry.filter.oredict." + (q.gui.filter.useod ? "yes" : "no")}]'
+                        width="16" height="16"/>
+            </button>
+
+            <button id="data" y="36" width="16" height="16" callback="(q) => q.gui.handleClick(2)">
+                <tooltip
+                        text='(q) => [{"translate":"info.squarry.filter.meta." + (q.gui.filter.usemeta ? "yes" : "no")}]'
+                        width="16" height="16"/>
+            </button>
+        </empty>
+
+        <import from="c:player_hotbar" x="7" y="25" align-y="bottom"/>
+        <import from="c:player_inventory" x="7" y="83" align-y="bottom"/>
+    </img>
+</root>

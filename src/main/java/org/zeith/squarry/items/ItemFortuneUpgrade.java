@@ -33,7 +33,7 @@ public class ItemFortuneUpgrade
 			++fortune;
 		
 		enchantmentMap.set(
-				quarry.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.FORTUNE),
+				quarry.registryAccess().holderOrThrow(Enchantments.FORTUNE),
 				fortune
 		);
 	}

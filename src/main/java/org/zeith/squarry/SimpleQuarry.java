@@ -13,9 +13,8 @@ import org.zeith.hammerlib.event.fml.FMLFingerprintCheckEvent;
 import org.zeith.hammerlib.proxy.HLConstants;
 import org.zeith.hammerlib.util.CommonMessages;
 import org.zeith.hammerlib.util.mcf.Resources;
-import org.zeith.squarry.blocks.BlockFuelQuarry;
 import org.zeith.squarry.client.SQClientProxy;
-import org.zeith.squarry.init.TagsSQ;
+import org.zeith.squarry.init.*;
 
 @Mod(SimpleQuarry.MOD_ID)
 public class SimpleQuarry
@@ -26,7 +25,7 @@ public class SimpleQuarry
 	
 	@CreativeTab.RegisterTab
 	public static final CreativeTab ITEM_GROUP = new CreativeTab(Resources.location(SQConstants.MOD_ID, "root"),
-			b -> b.icon(BlockFuelQuarry.FUEL_QUARRY.asItem()::getDefaultInstance)
+			b -> b.icon(BlocksSQ.FUEL_QUARRY.asItem()::getDefaultInstance)
 					.title(Component.translatable("itemGroup." + SQConstants.MOD_ID))
 					.withTabsBefore(HLConstants.HL_TAB.id())
 	);
